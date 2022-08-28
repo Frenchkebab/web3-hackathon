@@ -1,2 +1,9 @@
 node_modules
-node_modules
+.env
+artifacts
+cache
+config
+.DS_Store
+contracts/airnodeContracts/artifacts
+artifacts/@api3
+artifacts
