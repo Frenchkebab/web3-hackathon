@@ -146,7 +146,7 @@
     "logFormat": "json",
     "chains": [
       {
-        "id": "31",
+        "id": "137",
         "type": "evm",
         "providers": [
           {

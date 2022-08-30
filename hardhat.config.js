@@ -37,7 +37,7 @@ module.exports = {
     },
 
     matic: {
-      url: process.env.MATIC_URL || 'https://rinkeby.infura.io/v3/',
+      url: process.env.PROVIDER_URL || 'https://rinkeby.infura.io/v3/',
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
