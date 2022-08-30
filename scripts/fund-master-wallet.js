@@ -14,6 +14,12 @@ const util = require('../src/util');
 //   blockNumber: 32467145
 // }
 
+const fetchGasFee = async () => {
+  const priceResponse = await fetch('https://gasstation-mainnet.matic.network/v2');
+  const currentGasFee = await priceResponse.json();
+  return currentGasFee;
+}
+
 async function main() {
   const masterWalletAddress = util.readFromReceipt('masterWalletAddress');
   if (!masterWalletAddress) {
@@ -22,18 +28,17 @@ async function main() {
   const amount = '0.01'; // ETH
   const wallet = await evm.getWallet();
 
-  const priceResponse = await fetch('https://gasstation-mainnet.matic.network/v2');
-  const currentGasFee = await priceResponse.json();
-  console.log(await currentGasFee.fast.maxPriorityFeePerGas);
-  console.log(await currentGasFee.fast.maxFeePerGas);
+  const currentGasFee = await fetchGasFee();
+  const fastGasFee = currentGasFee.fast;
+
+  const maxPriorityFeePerGas = Math.round(fastGasFee.maxPriorityFee);
+  const maxFeePerGas = Math.round(fastGasFee.maxFee);
 
   const txReceipt = await wallet.sendTransaction({
     to: masterWalletAddress,
     value: ethers.utils.parseEther(amount),
-    maxPriorityFeePerGas: currentGasFee.fast.maxPriorityFeePerGas,
-    maxFeePerGas: currentGasFee.fast.maxFeePerGas
-    // maxPriorityFeePerGas: ethers.utils.parseUnits("40", "gwei"),
-    // maxFeePerGas: ethers.utils.parseUnits("40", "gwei"),
+    maxPriorityFeePerGas: ethers.utils.parseUnits(`${maxPriorityFeePerGas}`, 'gwei'),
+    maxFeePerGas: ethers.utils.parseUnits(`${maxFeePerGas}`, 'gwei'),
   });
 
   function sent() {
