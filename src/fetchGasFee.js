@@ -1,4 +1,4 @@
-const fetch = require('node-fetch-commonjs')
+const fetch = require('node-fetch-commonjs');
 
 // gas prices in GWei
 // {
@@ -10,10 +10,12 @@ const fetch = require('node-fetch-commonjs')
 //   blockNumber: 32467145
 // }
 
-module.exports = { 
+module.exports = {
   fetchGasFee: async () => {
-    const priceResponse = await fetch('https://gasstation-mainnet.matic.network/v2');
+    const priceResponse = await fetch(
+      'https://gasstation-mainnet.matic.network/v2'
+    );
     const currentGasFee = await priceResponse.json();
-    return currentGasFee["fast"]; // safeLow, standard, fast
-  }
-}
+    return currentGasFee['fast']; // safeLow, standard, fast
+  },
+};
