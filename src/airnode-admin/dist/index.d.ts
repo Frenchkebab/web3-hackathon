@@ -1,0 +1,11 @@
+export declare function createRequester(airnode: any, requesterAdmin: any): Promise<unknown>;
+export declare function updateRequesterAdmin(airnode: any, requesterIndex: any, requesterAdmin: any): Promise<unknown>;
+export declare function deriveDesignatedWallet(airnode: any, providerId: any, requesterIndex: any): Promise<string>;
+export declare function endorseClient(airnode: any, requesterIndex: any, clientAddress: any): Promise<unknown>;
+export declare function unendorseClient(airnode: any, requesterIndex: any, clientAddress: any): Promise<unknown>;
+export declare function createTemplate(airnode: any, template: any): Promise<unknown>;
+export declare function requestWithdrawal(airnode: any, providerId: any, requesterIndex: any, destination: any): Promise<unknown>;
+export declare function checkWithdrawalRequest(airnode: any, withdrawalRequestId: any): Promise<any>;
+export declare function createProvider(airnode: any, providerAdmin: any): Promise<unknown>;
+export declare function updateProviderAdmin(airnode: any, providerId: any, providerAdmin: any): Promise<unknown>;
+export declare function updateAuthorizers(airnode: any, providerId: any, endpointId: any, authorizers: any): Promise<unknown>;
