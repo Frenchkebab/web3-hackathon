@@ -1,9 +1,13 @@
 require('dotenv').config();
-
 require('@nomiclabs/hardhat-etherscan');
 require('@nomiclabs/hardhat-waffle');
 require('hardhat-gas-reporter');
 require('solidity-coverage');
+
+const { fetchGasFee } = require('./src/fetchGasFee');
+
+// const gasPrice = fetchGasFee().fast.maxFee;
+const gasPrice = 100000000000;
 
 // This is a sample Hardhat task. To learn how to create your own go to
 // https://hardhat.org/guides/create-task.html
@@ -40,6 +44,7 @@ module.exports = {
       url: process.env.PROVIDER_URL || 'https://rinkeby.infura.io/v3/',
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+      gasPrice,
     },
   },
   gasReporter: {
