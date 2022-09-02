@@ -4,7 +4,7 @@ const { ethers } = require('hardhat');
 async function main() {
   const Convenience = await ethers.getContractFactory('Convenience');
   const convenience = await Convenience.deploy(
-    '0xA9C42aB428281A80E7F9056aA8A589013B8a5a95'
+    '0x52AC897baaED3db416729221897D641d756Ceb73'
   );
   await convenience.deployed();
   console.log('contract deployed to: ', convenience.address);

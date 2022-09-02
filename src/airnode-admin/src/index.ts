@@ -1,5 +1,5 @@
-import { ethers } from 'ethers';
-import * as airnodeAbi from '@api3/airnode-abi';
+import { ethers } from "ethers";
+import * as airnodeAbi from "@api3/airnode-abi";
 
 export async function createRequester(airnode, requesterAdmin) {
   const receipt = await airnode.createRequester(requesterAdmin);
@@ -11,8 +11,15 @@ export async function createRequester(airnode, requesterAdmin) {
   );
 }
 
-export async function updateRequesterAdmin(airnode, requesterIndex, requesterAdmin) {
-  const receipt = await airnode.updateRequesterAdmin(requesterIndex, requesterAdmin);
+export async function updateRequesterAdmin(
+  airnode,
+  requesterIndex,
+  requesterAdmin
+) {
+  const receipt = await airnode.updateRequesterAdmin(
+    requesterIndex,
+    requesterAdmin
+  );
   return new Promise((resolve) =>
     airnode.provider.once(receipt.hash, (tx) => {
       const parsedLog = airnode.interface.parseLog(tx.logs[0]);
@@ -21,7 +28,11 @@ export async function updateRequesterAdmin(airnode, requesterIndex, requesterAdm
   );
 }
 
-export async function deriveDesignatedWallet(airnode, providerId, requesterIndex) {
+export async function deriveDesignatedWallet(
+  airnode,
+  providerId,
+  requesterIndex
+) {
   const provider = await airnode.getProvider(providerId);
   const hdNode = ethers.utils.HDNode.fromExtendedKey(provider.xpub);
   const designatedWalletNode = hdNode.derivePath(`m/0/${requesterIndex}`);
@@ -29,7 +40,11 @@ export async function deriveDesignatedWallet(airnode, providerId, requesterIndex
 }
 
 export async function endorseClient(airnode, requesterIndex, clientAddress) {
-  const receipt = await airnode.updateClientEndorsementStatus(requesterIndex, clientAddress, true);
+  const receipt = await airnode.updateClientEndorsementStatus(
+    requesterIndex,
+    clientAddress,
+    true
+  );
   return new Promise((resolve) =>
     airnode.provider.once(receipt.hash, (tx) => {
       const parsedLog = airnode.interface.parseLog(tx.logs[0]);
@@ -39,7 +54,11 @@ export async function endorseClient(airnode, requesterIndex, clientAddress) {
 }
 
 export async function unendorseClient(airnode, requesterIndex, clientAddress) {
-  const receipt = await airnode.updateClientEndorsementStatus(requesterIndex, clientAddress, false);
+  const receipt = await airnode.updateClientEndorsementStatus(
+    requesterIndex,
+    clientAddress,
+    false
+  );
   return new Promise((resolve) =>
     airnode.provider.once(receipt.hash, (tx) => {
       const parsedLog = airnode.interface.parseLog(tx.logs[0]);
@@ -50,7 +69,7 @@ export async function unendorseClient(airnode, requesterIndex, clientAddress) {
 
 export async function createTemplate(airnode, template) {
   let encodedParameters;
-  if (typeof template.parameters == 'string') {
+  if (typeof template.parameters == "string") {
     encodedParameters = template.parameters;
   } else {
     encodedParameters = airnodeAbi.encode(template.parameters);
@@ -72,9 +91,23 @@ export async function createTemplate(airnode, template) {
   );
 }
 
-export async function requestWithdrawal(airnode, providerId, requesterIndex, destination) {
-  const designatedWalletAddress = deriveDesignatedWallet(airnode, providerId, requesterIndex);
-  const receipt = await airnode.requestWithdrawal(providerId, requesterIndex, designatedWalletAddress, destination);
+export async function requestWithdrawal(
+  airnode,
+  providerId,
+  requesterIndex,
+  destination
+) {
+  const designatedWalletAddress = deriveDesignatedWallet(
+    airnode,
+    providerId,
+    requesterIndex
+  );
+  const receipt = await airnode.requestWithdrawal(
+    providerId,
+    requesterIndex,
+    designatedWalletAddress,
+    destination
+  );
   return new Promise((resolve) =>
     airnode.provider.once(receipt.hash, (tx) => {
       const parsedLog = airnode.interface.parseLog(tx.logs[0]);
@@ -88,7 +121,9 @@ export async function checkWithdrawalRequest(airnode, withdrawalRequestId) {
     address: airnode.address,
     fromBlock: 0,
     topics: [
-      ethers.utils.id('WithdrawalFulfilled(bytes32,uint256,bytes32,address,address,uint256)'),
+      ethers.utils.id(
+        "WithdrawalFulfilled(bytes32,uint256,bytes32,address,address,uint256)"
+      ),
       null,
       null,
       withdrawalRequestId,
@@ -102,11 +137,18 @@ export async function checkWithdrawalRequest(airnode, withdrawalRequestId) {
 }
 
 export async function createProvider(airnode, providerAdmin) {
-  const hdNode = ethers.utils.HDNode.fromMnemonic(airnode.signer.mnemonic.phrase);
+  const hdNode = ethers.utils.HDNode.fromMnemonic(
+    airnode.signer.mnemonic.phrase
+  );
   const xpub = hdNode.neuter().extendedKey;
-  const masterWallet = ethers.Wallet.fromMnemonic(airnode.signer.mnemonic.phrase, 'm').connect(airnode.provider);
+  const masterWallet = ethers.Wallet.fromMnemonic(
+    airnode.signer.mnemonic.phrase,
+    "m"
+  ).connect(airnode.provider);
   // Assuming masterWallet has funds to make the transaction below
-  const receipt = await airnode.connect(masterWallet).createProvider(providerAdmin, xpub);
+  const receipt = await airnode
+    .connect(masterWallet)
+    .createProvider(providerAdmin, xpub);
   return new Promise((resolve) =>
     airnode.provider.once(receipt.hash, (tx) => {
       const parsedLog = airnode.interface.parseLog(tx.logs[0]);
@@ -125,8 +167,28 @@ export async function updateProviderAdmin(airnode, providerId, providerAdmin) {
   );
 }
 
-export async function updateAuthorizers(airnode, providerId, endpointId, authorizers) {
-  const receipt = await airnode.updateEndpointAuthorizers(providerId, endpointId, authorizers);
+export async function updateAuthorizers(
+  airnode,
+  providerId,
+  endpointId,
+  authorizers
+) {
+  console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+  const receipt = await airnode.updateEndpointAuthorizers(
+    providerId,
+    endpointId,
+    authorizers,
+    {
+      maxPriorityFeePerGas: ethers.BigNumber.from(
+        ethers.utils.parseUnits(`80`, "gwei")
+      ),
+      maxFeePerGas: ethers.BigNumber.from(
+        ethers.utils.parseUnits(`80`, "gwei")
+      ),
+    }
+  );
+  console.log("index.ts receipt: ");
+  console.log(receipt);
   return new Promise((resolve) =>
     airnode.provider.once(receipt.hash, (tx) => {
       const parsedLog = airnode.interface.parseLog(tx.logs[0]);

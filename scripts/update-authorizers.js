@@ -1,6 +1,6 @@
 require('dotenv').config();
 const ethers = require('ethers');
-const airnodeAdmin = require('@api3/airnode-admin');
+const airnodeAdmin = require('../src/airnode-admin');
 const evm = require('../src/evm');
 const parameters = require('../src/parameters');
 const { fetchGasFee } = require('../src/fetchGasFee');
@@ -19,14 +19,16 @@ async function main() {
     airnode,
     parameters.providerId,
     parameters.endpointId,
-    [ethers.constants.AddressZero]
-    // {
-    //   maxPriorityFeePerGas: ethers.utils.parseUnits(
-    //     `${maxPriorityFeePerGas}`,
-    //     'gwei'
-    //   ),
-    //   maxFeePerGas: ethers.utils.parseUnits(`${maxFeePerGas}`, 'gwei'),
-    // }
+    [ethers.constants.AddressZero],
+    {
+      maxPriorityFeePerGas: ethers.BigNumber.from(
+        ethers.utils.parseUnits(`${maxPriorityFeePerGas}`, 'gwei')
+      ),
+      maxFeePerGas: ethers.BigNumber.from(
+        ethers.utils.parseUnits(`${maxFeePerGas}`, 'gwei')
+      ),
+      gasPrice: ethers.utils.parseUnits('100', 'gwei'),
+    }
   );
   console.log(
     `Updated authorizers of endpoint with ID ${parameters.endpointId} to allow all public requests`

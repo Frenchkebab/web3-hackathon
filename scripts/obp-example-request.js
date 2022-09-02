@@ -8,8 +8,10 @@ const parameters = require('../src/parameters');
 async function main() {
   const path = 'banks.0.id';
   const type = 'bytes32';
-  const providerId = '0xc6323485739cdf4f1073c1b21bb21a8a5c0a619ffb84dd56c4f4454af2802a40';
-  const endpointId = '0xbfd499b3bebd55fe02ddcdd5a2f1ab36ef75fb3ace1de05c878d0b53ce4a7296';
+  const providerId =
+    '0xc6323485739cdf4f1073c1b21bb21a8a5c0a619ffb84dd56c4f4454af2802a40';
+  const endpointId =
+    '0xbfd499b3bebd55fe02ddcdd5a2f1ab36ef75fb3ace1de05c878d0b53ce4a7296';
   const wallet = await evm.getWallet();
   const exampleClient = new ethers.Contract(
     util.readFromLogJson('ExampleClient address'),
@@ -25,8 +27,10 @@ async function main() {
       endpointId,
       util.readFromLogJson('Requester index'),
       util.readFromLogJson('Designated wallet address'),
-      airnodeAbi.encode([{ name: '_path', type: 'bytes32', value: path},
-              { name: '_type', type: 'bytes32', value: type},])
+      airnodeAbi.encode([
+        { name: '_path', type: 'bytes32', value: path },
+        { name: '_type', type: 'bytes32', value: type },
+      ])
     );
     return new Promise((resolve) =>
       wallet.provider.once(receipt.hash, (tx) => {
@@ -37,10 +41,15 @@ async function main() {
   }
 
   const requestId = await makeRequest();
-  console.log(`Made the request with ID ${requestId}.\nWaiting for it to be fulfilled...`);
+  console.log(
+    `Made the request with ID ${requestId}.\nWaiting for it to be fulfilled...`
+  );
   function fulfilled(requestId) {
     return new Promise((resolve) =>
-      wallet.provider.once(airnode.filters.ClientRequestFulfilled(null, requestId), resolve)
+      wallet.provider.once(
+        airnode.filters.ClientRequestFulfilled(null, requestId),
+        resolve
+      )
     );
   }
   await fulfilled(requestId);
